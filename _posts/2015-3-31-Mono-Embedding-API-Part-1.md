@@ -10,7 +10,7 @@ edition of Visual Studio.
 
 Before we can start with the embedding API we'll need Mono itself.
 
-Andreia Gaita [Shana](https://github.com/shana)  has made a fork of mono with
+Andreia Gaita ([Shana](https://github.com/shana))  has made a fork of mono with
 some fixes to the embedding api, you can find her fork on [github](https://github.com/shana/mono).
 
 I also have the same fork of mono, with the project files upgraded to VC++ 2013,
