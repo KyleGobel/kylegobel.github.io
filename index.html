@@ -1,18 +1,89 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html>
 
-<div class="posts">
-  {% for post in site.posts %}
-    <article class="post">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Some Docs &amp; Stuff : I have no clue what I&#39;m doing">
 
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
+    <title>Some Docs &amp; Stuff</title>
+  </head>
 
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
-  {% endfor %}
-</div>
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/KyleGobel">View on GitHub</a>
+
+          <h1 id="project_title">Some Docs &amp; Stuff</h1>
+          <h2 id="project_tagline">I have no clue what I&#39;m doing</h2>
+
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="setting-up-remote-powershell-execution-from-jenkins" class="anchor" href="#setting-up-remote-powershell-execution-from-jenkins" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting up Remote Powershell Execution from Jenkins</h2>
+
+<p>Need to setup a way to deploy applications from our build server, out to the production servers.  We want these deployments to be manually invoked.  To set this up via powershell we need to do a few things.</p>
+
+<ol>
+<li>Enable PS Remoting on both the server (build machine) and the client (production machine)</li>
+<li>Enable Script Exection</li>
+</ol>
+
+<h3>
+<a id="set-up-the-build-machine" class="anchor" href="#set-up-the-build-machine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Set up the Build Machine</h3>
+
+<p>Powershell is weird and you can't remote to anything without some setup first.  We have to enable Powershell Remoting, and then basically tell powershell that everything is a trusted connection.</p>
+
+<p>First enable script execution</p>
+
+<div class="highlight highlight-source-postscript"><pre><span class="pl-smi">Set-ExecutionPolicy</span> <span class="pl-smi">unrestricted</span> <span class="pl-smi">-Force</span></pre></div>
+
+<p>Next enable PS-Remoting</p>
+
+<div class="highlight highlight-source-postscript"><pre><span class="pl-smi">Enable-PSRemoting</span> <span class="pl-smi">-Force</span>
+<span class="pl-smi">winrm</span> <span class="pl-smi">s</span> <span class="pl-smi">winrm</span><span class="pl-smi">/config/client</span> <span class="pl-smi">'@</span>{<span class="pl-smi">TrustedHosts="*"</span>}<span class="pl-smi">'</span></pre></div>
+
+<h3>
+<a id="set-up-the-deploy-server" class="anchor" href="#set-up-the-deploy-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Set up the Deploy Server</h3>
+
+<ol>
+<li>Open port 5985</li>
+<li>Run the following Powershell command
+<code>ps
+Enable-PSRemoting -Force
+</code>
+</li>
+</ol>
+
+<h3>
+<a id="test-out-the-settings" class="anchor" href="#test-out-the-settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Test out the settings</h3>
+
+<p>To test the settings, we should attempt to connect to the remote machine and run some commands</p>
+
+<div class="highlight highlight-source-postscript"><pre><span class="pl-smi">$password</span> <span class="pl-smi">=</span> <span class="pl-smi">convertto-securestring</span> <span class="pl-smi">-asplaintext</span> <span class="pl-smi">-force</span> <span class="pl-smi">-string</span> <span class="pl-smi">"my</span> <span class="pl-smi">password"</span>
+<span class="pl-smi">$credential</span> <span class="pl-smi">=</span> <span class="pl-smi">new-object</span> <span class="pl-smi">-typename</span> <span class="pl-smi">system.management.automation.pscredential</span> <span class="pl-smi">-argumentlist</span> <span class="pl-smi">"MY_USERNAME",</span> <span class="pl-smi">$password</span> 
+<span class="pl-smi">$session</span> <span class="pl-smi">=</span> <span class="pl-smi">new-pssession</span> <span class="pl-smi">MY_EC2_PUBLIC_IP</span> <span class="pl-smi">-credential</span> <span class="pl-smi">$credential</span> 
+<span class="pl-smi">Enter-PSSession</span> <span class="pl-smi">$session</span>  
+<span class="pl-smi">Write-Host</span> <span class="pl-smi">"Hello,</span> <span class="pl-smi">World</span> <span class="pl-s"><span class="pl-pds">(</span>from $env:COMPUTERNAME<span class="pl-pds">)</span></span><span class="pl-smi">"</span></pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
